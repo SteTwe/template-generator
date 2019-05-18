@@ -9,11 +9,11 @@ if [[ "$1" == "notes" ]]; then
 
 fi
 
-if [[ "$1" == "ucll_doc" ]]; then
+if [[ "$1" == "school_template_doc" ]]; then
 	cp $HOME/templates/$1.docx .
 fi
 
-if [[ "$1" == "ucll_ppt" ]]; then
+if [[ "$1" == "school_template__ppt" ]]; then
 	cp $HOME/templates/$1.pptx .
 fi
 
@@ -24,7 +24,7 @@ if [[ "$1" == "latex" ]]; then
 	DATE=$4
 	sed -e "s/*TITLE/$TITLE/" -e "s/*SUBTITLE/$SUBTITLE/" -e "s/*DATE/$DATE/" $1.tex
 else
-	echo "Template is not supported."
+	echo "Template is not (yet) supported."
 	echo "Exiting..."
 	exit 1
 fi
