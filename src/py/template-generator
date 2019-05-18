@@ -2,22 +2,34 @@
 
 import sys
 from pathlib import Path
+import pickle
+import os
+import re
 
 
 """ Define location db-file"""
-db_location = str(Path.home()) + '/.local/share/py-templates/'
+db_location = str(Path.home()) + '/.local/share/template-generator/'
 """ Define location of templates """
 template_location = str(Path.home()) + '/templates/'
+
+""" Define db-file name """
+db_name = 'templates.dat'
+
 """ List of items, to be stored in db-file """
 items = []
 
-## TODO: lookup how to store objects in db-file OR create to_string for text-based storage (??How to read??).
+# TODO: lookup how to store objects in db-file OR create to_string for text-based storage (??How to read??).
 class Template:
     """ A class definition for each template, which is stored in db-file."""
 
-    def __init__(self, name: str, arguments: list):
+# TODO: temporary single argument only, has to be expanded to multiple arguments
+    def __init__(self, name: str, arguments):
         self.name = name
         self.arguments = arguments
+
+def add_item(name: str, arguments):
+    # TODO: check if template already exists.
+    items.append(Template(name, arguments))
 
 
 def print_usage():
@@ -30,7 +42,8 @@ def print_usage():
           "-o   --output                                -- The output filename, standard out by default.\n"
           "\n"
           "-h   --help                                  -- Display this help message.\n"
-          "-v   --version                               -- Display version info.\n")
+          "-v   --version                               -- Display version info.\n"
+          "-u   --update                                -- Update template database.\n")
 
 
 def print_version():
@@ -38,8 +51,40 @@ def print_version():
             "Copyright (C) 2019 Stef Tweepenninckx\n"
     )
 
+def update_database():
+    with open('/home/stef/.config/template-generator/config', 'r') as template_list:
+        line = template_list.readline().rstrip()
+        template_name = re.compile("^\[.+\]$")
+        template_end = "end"
+        new_template = []
+        while line:
+            if template_name.match(line) is not None:
+                new_template.append(line.replace('[','').replace(']',''))
+            elif line == "end":
+                if len(new_template) > 1:
+                    name = new_template[0]
+                    arguments = new_template[1:]
+                    print(arguments)
+                    add_item(name, arguments)
+                    new_template = []
+                elif len(new_template) == 1:
+                    add_item(new_template[0], [])
+            else:
+                new_template.append(line)
+            line = template_list.readline().rstrip()
+
+
+
+
 
 if __name__ == '__main__':
+    try:
+        with open(db_location + db_name, 'rb') as f:
+            items = pickle.load(f)
+    except:
+        pass
+
+
     if len(sys.argv) <= 1:
         print_usage()
     elif sys.argv[1] == '-h' or sys.argv[1] == '--help':
@@ -51,7 +96,17 @@ if __name__ == '__main__':
         # TODO: integrate -o option (check if sys.argv contains -o, cuz len(arguments) can differ)
     elif sys.argv[1] == '-l' or sys.argv[1] == '--list':
         print("TODO: list")
+        for val in items:
+            print(val.name)
     elif sys.argv[1] == '-la' or sys.argv[1] == '--list-arguments':
         print("TODO: list arguments")
+    elif sys.argv[1] == '-u' or sys.argv[1] == '--update':
+        update_database()
+    elif sys.argv[1] == '-a':
+        """ added temporary for development purpose, will be removed when finished"""
+        add_item(sys.argv[2], sys.argv[3])
     else:
         print_usage()
+
+    with open(db_location + db_name, 'wb') as f:
+        pickle.dump(items, f)
