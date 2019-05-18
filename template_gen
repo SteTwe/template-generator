@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+
+if [[ "$1" == "notes" ]]; then
+	cp $HOME/templates/$1.ms .
+	AUTHOR=$2
+	TITLE=$3
+	sed -e "s/*TITLE/$TITLE/" -e "s/*AUTHOR/$AUTHOR/" $1.ms
+
+fi
+
+if [[ "$1" == "ucll_doc" ]]; then
+	cp $HOME/templates/$1.docx .
+fi
+
+if [[ "$1" == "ucll_ppt" ]]; then
+	cp $HOME/templates/$1.pptx .
+fi
+
+if [[ "$1" == "latex" ]]; then
+	cp $HOME/templates/$1.tex .
+	TITLE=$2
+	SUBTITLE=$3
+	DATE=$4
+	sed -e "s/*TITLE/$TITLE/" -e "s/*SUBTITLE/$SUBTITLE/" -e "s/*DATE/$DATE/" $1.tex
+else
+	echo "Template is not supported."
+	echo "Exiting..."
+	exit 1
+fi
+
