@@ -36,7 +36,7 @@ class Template:
             if len(other.arguments) != len(self.arguments):
                 return False
             else:
-                for i in range(len(other)):
+                for i in range(len(other.arguments)):
                     if other.arguments[i] != self.arguments[i]:
                         return False
             return True
@@ -54,8 +54,17 @@ class Template:
 
 
 def add_item(name: str, arguments):
-    # TODO: check if template already exists.
-    items.append(Template(name, arguments))
+    if duplicate_template(Template(name, arguments)):
+        raise Exception("Template is already in the datafile.")
+    else:
+        items.append(Template(name, arguments))
+
+
+def duplicate_template(template):
+    for item in items:
+        if (item == template):
+            return True
+    return False
 
 
 def list_items():
@@ -78,7 +87,7 @@ def print_usage():
 
 
 def print_version():
-    print(  "gen_template 0.2.0\n"
+    print(  "gen_template 0.2.1\n"
             "Copyright (C) 2019 Stef Tweepenninckx\n"
     )
 
@@ -96,17 +105,19 @@ def update_database():
                 if len(new_template) > 1:
                     name = new_template[0]
                     arguments = new_template[1:]
-                    print(arguments)
-                    add_item(name, arguments)
+                    try:
+                        add_item(name, arguments)
+                    except Exception as e:
+                        print(e)
                     new_template = []
                 elif len(new_template) == 1:
-                    add_item(new_template[0], [])
+                    try:
+                        add_item(new_template[0], [])
+                    except Exception as e:
+                        print(e)
             else:
                 new_template.append(line)
             line = template_list.readline().rstrip()
-
-
-
 
 
 if __name__ == '__main__':
@@ -115,7 +126,6 @@ if __name__ == '__main__':
             items = pickle.load(f)
     except:
         pass
-
 
     if len(sys.argv) <= 1:
         print_usage()
