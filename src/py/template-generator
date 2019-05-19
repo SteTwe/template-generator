@@ -11,9 +11,13 @@ import re
 db_location = str(Path.home()) + '/.local/share/template-generator/'
 """ Define location of templates """
 template_location = str(Path.home()) + '/templates/'
+""" Define location of config file """
+config_location = str(Path.home()) + '/.config/template-generator/'
 
 """ Define db-file name """
 db_name = 'templates.dat'
+""" Define config file name """
+config_name = 'config'
 
 """ List of items, to be stored in db-file """
 items = []
@@ -55,9 +59,10 @@ class Template:
 
 def add_item(name: str, arguments):
     if duplicate_template(Template(name, arguments)):
-        raise Exception("Template is already in the datafile.")
+        raise Exception("Template " + name + " is already in the datafile.")
     else:
         items.append(Template(name, arguments))
+        print("Template " + name + " has been added to the datafile.")
 
 
 def duplicate_template(template):
@@ -87,13 +92,13 @@ def print_usage():
 
 
 def print_version():
-    print(  "gen_template 0.2.1\n"
+    print(  "gen_template 1.0.0\n"
             "Copyright (C) 2019 Stef Tweepenninckx\n"
     )
 
 
 def update_database():
-    with open('/home/stef/.config/template-generator/config', 'r') as template_list:
+    with open(config_location + config_name, 'r') as template_list:
         line = template_list.readline().rstrip()
         template_name = re.compile("^\[.+\]$")
         template_end = "end"
@@ -113,6 +118,7 @@ def update_database():
                 elif len(new_template) == 1:
                     try:
                         add_item(new_template[0], [])
+                        new_template = []
                     except Exception as e:
                         print(e)
             else:
@@ -120,7 +126,41 @@ def update_database():
             line = template_list.readline().rstrip()
 
 
+def generate():
+    """ Hard-coded version for now, will be improved later on """
+    if sys.argv[2] == "notes":
+        author = sys.argv[3]
+        title = sys.argv[4]
+        print(author, title)
+        with open(template_location + sys.argv[2] + ".ms", 'rt') as in_file:
+            with open(sys.argv[2] + ".ms", 'wt') as out_file:
+                for line in in_file:
+                    out_file.write(line.replace('*AUTHOR', author).replace('*TITLE', title))
+    elif sys.argv[2] == "latex":
+        author = sys.argv[3]
+        title = sys.argv[4]
+        subtitle = sys.argv[5]
+        date = sys.argv[6]
+        with open(template_location + sys.argv[2] + ".tex", 'rt') as in_file:
+            with open(sys.argv[2] + ".tex", 'wt') as out_file:
+                for line in in_file:
+                    out_file.write(line.replace('*AUTHOR', author).replace('*TITLE', title)
+                    .replace('*SUBTITLE', subtitle).replace('*DATE', date))
+    elif sys.argv[2] == "school_doc":
+        with open(template_location + sys.argv[2] + ".docx", 'rb') as in_file:
+            with open(sys.argv[2] + ".docx", 'wb' ) as out_file:
+                for line in in_file:
+                    out_file.write(line)
+    elif sys.argv[2] == "school_ppt":
+        with open(template_location + sys.argv[2] + ".pptx", 'rb') as in_file:
+            with open(sys.argv[2] + ".pptx", 'wb' ) as out_file:
+                for line in in_file:
+                    out_file.write(line)
+
+
 if __name__ == '__main__':
+    Path(config_location).mkdir(parents=True, exist_ok=True)
+    Path(db_location).mkdir(parents=True, exist_ok=True)
     try:
         with open(db_location + db_name, 'rb') as f:
             items = pickle.load(f)
@@ -134,15 +174,15 @@ if __name__ == '__main__':
     elif sys.argv[1] == '-v' or sys.argv[1] == '--version':
         print_version()
     elif sys.argv[1] == '-g' or sys.argv[1] == '--generate':
-        print("TODO: generate")
+        generate()
         # TODO: integrate -o option (check if sys.argv contains -o, cuz len(arguments) can differ)
     elif sys.argv[1] == '-l' or sys.argv[1] == '--list':
         list_items()
     elif sys.argv[1] == '-u' or sys.argv[1] == '--update':
-        update_database()
-    elif sys.argv[1] == '-a':
-        """ added temporary for development purpose, will be removed when finished"""
-        add_item(sys.argv[2], sys.argv[3])
+        try:
+            update_database()
+        except FileNotFoundError:
+            print("No config file found.")
     else:
         print_usage()
 
