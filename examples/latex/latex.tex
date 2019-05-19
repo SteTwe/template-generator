@@ -1,0 +1,63 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[backend=biber, style=numeric, citestyle=numeric-comp, sorting = none]{biblatex}
+%force footnote to bottom
+\usepackage[bottom]{footmisc}
+%automatic \noindent for whole doc
+\setlength\parindent{0pt}
+
+
+
+%TODO AUTHOR
+\author{SteTwe}
+% TODO SUBTITLE
+\title{Demonstration of template-generator}
+
+
+%define printtitle
+\makeatletter
+\def\printtitle{                 
+    {\large \@title}} 
+\makeatother
+
+%define printauthor
+\makeatletter                       
+\def\printauthor{                  
+    {\large \@author}}              
+\makeatother
+
+\begin{document}
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\center 
+
+% TODO TITLE
+\textsc{\LARGE Example}\\[1.5cm] 
+\HRule \\[0.4cm]
+
+{\huge \bfseries \printtitle}\\[0.4cm] 
+\HRule \\[0.4cm]
+
+\Large \emph{%author
+					}\\
+ \textsc{\printauthor}\\[3cm]
+
+% TODO DATE
+{\large \textsc{19 May 2019}}\\[3cm] 
+
+\vfill 
+\end{titlepage}
+\pagenumbering{roman}
+\tableofcontents
+\addtocontents{toc}{\setcounter{tocdepth}{2}}
+\newpage
+\pagenumbering{arabic}
+%===============================================================================	
+\section{Section 1}	
+%===============================================================================	
+\end{document}

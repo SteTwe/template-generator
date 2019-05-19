@@ -83,8 +83,7 @@ def print_usage():
           "\n"
           "-g   --generate <template> <arguments>       -- Generate a new template.\n"
           "-l   --list                                  -- List all templates.\n"
-          "-la  --list-arguments <template>             -- List possible arguments for given template.\n"
-          "-o   --output                                -- The output filename, standard out by default.\n"
+          #"-o   --output                                -- The output filename, standard out by default.\n"
           "\n"
           "-h   --help                                  -- Display this help message.\n"
           "-v   --version                               -- Display version info.\n"
@@ -92,7 +91,7 @@ def print_usage():
 
 
 def print_version():
-    print(  "gen_template 1.0.0\n"
+    print(  "template-generator 1.0.0\n"
             "Copyright (C) 2019 Stef Tweepenninckx\n"
     )
 
@@ -131,7 +130,6 @@ def generate():
     if sys.argv[2] == "notes":
         author = sys.argv[3]
         title = sys.argv[4]
-        print(author, title)
         with open(template_location + sys.argv[2] + ".ms", 'rt') as in_file:
             with open(sys.argv[2] + ".ms", 'wt') as out_file:
                 for line in in_file:
