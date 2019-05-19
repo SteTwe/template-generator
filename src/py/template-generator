@@ -22,14 +22,45 @@ items = []
 class Template:
     """ A class definition for each template, which is stored in db-file."""
 
-# TODO: temporary single argument only, has to be expanded to multiple arguments
+
     def __init__(self, name: str, arguments):
         self.name = name
         self.arguments = arguments
 
+
+    def __eq__(self, other):
+        """ Override default equality """
+        if isinstance(other, Template):
+            if other.name != self.name:
+                return False
+            if len(other.arguments) != len(self.arguments):
+                return False
+            else:
+                for i in range(len(other)):
+                    if other.arguments[i] != self.arguments[i]:
+                        return False
+            return True
+        return False
+
+
+    def __str__(self):
+        output_str = self.name + ": "
+        for i in range(len(self.arguments)):
+            if len(self.arguments) == i + 1:
+                output_str += self.arguments[i]
+            else:
+                output_str += self.arguments[i] + ", "
+        return output_str
+
+
 def add_item(name: str, arguments):
     # TODO: check if template already exists.
     items.append(Template(name, arguments))
+
+
+def list_items():
+    for item in items:
+        print(item)
 
 
 def print_usage():
@@ -47,9 +78,10 @@ def print_usage():
 
 
 def print_version():
-    print(  "gen_template 0.1.0\n"
+    print(  "gen_template 0.2.0\n"
             "Copyright (C) 2019 Stef Tweepenninckx\n"
     )
+
 
 def update_database():
     with open('/home/stef/.config/template-generator/config', 'r') as template_list:
@@ -95,11 +127,7 @@ if __name__ == '__main__':
         print("TODO: generate")
         # TODO: integrate -o option (check if sys.argv contains -o, cuz len(arguments) can differ)
     elif sys.argv[1] == '-l' or sys.argv[1] == '--list':
-        print("TODO: list")
-        for val in items:
-            print(val.name)
-    elif sys.argv[1] == '-la' or sys.argv[1] == '--list-arguments':
-        print("TODO: list arguments")
+        list_items()
     elif sys.argv[1] == '-u' or sys.argv[1] == '--update':
         update_database()
     elif sys.argv[1] == '-a':
