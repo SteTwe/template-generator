@@ -53,11 +53,11 @@ Default template location is `~/templates/`. Arguments should be marked in the t
 ### LaTeX
 `$ template-generator -g latex Example SteTwe "Demonstration of template-generator" "$(date '+%d %B %Y')"`
 
-![LaTeX](https://github.com/SteTwe/template-generator/blob/master/examples/latex/latex.png)
+![LaTeX](https://i.imgur.com/MfrhU5E.png)
 
 
 `$ template-generator -g notes "Stef Tweepenninckx" "Lesson 15: notes" `
 
-![notes](https://github.com/SteTwe/template-generator/blob/master/examples/notes/notes.png)
+![notes](https://i.imgur.com/4Dg7fW3.png)
 
 Full examples available in `/examples/`
